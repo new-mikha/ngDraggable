@@ -51,6 +51,8 @@ angular.module("ngDraggable", [])
                 // deregistration function for mouse move events in $rootScope triggered by jqLite trigger handler
                 var _deregisterRootMoveListener = angular.noop;
 
+                var _ignoreNextMove = false;
+
                 var initialize = function () {
                     element.attr('draggable', 'false'); // prevent native drag
                     // check to see if drag handle(s) was specified
@@ -165,6 +167,8 @@ angular.module("ngDraggable", [])
                         _ty = _my - _mry - $window.pageYOffset;
                     }
 
+                    _ignoreNextMove = true;
+
                     $document.on(_moveEvents, onmove);
                     $document.on(_releaseEvents, onrelease);
                     // This event is used to receive manually triggered mouse move events
@@ -177,6 +181,17 @@ angular.module("ngDraggable", [])
                 };
 
                 var onmove = function (evt) {
+                    if(_ignoreNextMove) {
+                        // in Chrome there is a weird behaviour that onmove can be called right after 
+                        // mouse down, which leads to preventDefault(), and then onclick is not called
+                        // on mouse up. This was observed sometimes happening for every click, but more
+                        // often for the first click after coming from another window.
+                        // To fix that, 1st move is ignored. If there is a real move, there are gazillion
+                        // of calls to this event handler, so skipping the 1st one is not a problem.
+                        _ignoreNextMove = false;
+                        return;
+                    }
+
                     if (!_dragEnabled)return;
                     evt.preventDefault();
 
