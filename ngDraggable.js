@@ -41,7 +41,7 @@ angular.module("ngDraggable", [])
 
                 var _pressTimer = null;
 
-                var onDragStartCallback = $parse(attrs.ngDragStart) || null;
+                var onDragStartCallback = $parse(attrs.ngDragStarting) || null;
                 var onDragStopCallback = $parse(attrs.ngDragStop) || null;
                 var onDragSuccessCallback = $parse(attrs.ngDragSuccess) || null;
                 var allowTransform = angular.isDefined(attrs.allowTransform) ? scope.$eval(attrs.allowTransform) : true;
@@ -292,7 +292,7 @@ angular.module("ngDraggable", [])
 
                 var onDropCallback = $parse(attrs.ngDropSuccess);// || function(){};
 
-                var onDragStartCallback = $parse(attrs.ngDragStart);
+                var onDragStartCallback = $parse(attrs.ngDragStarting);
                 var onDragStopCallback = $parse(attrs.ngDragStop);
                 var onDragMoveCallback = $parse(attrs.ngDragMove);
 
@@ -322,7 +322,7 @@ angular.module("ngDraggable", [])
                     if(! _dropEnabled)return;
                     isTouching(obj.x,obj.y,obj.element);
 
-                    if (attrs.ngDragStart) {
+                    if (attrs.ngDragStarting) {
                         $timeout(function(){
                             onDragStartCallback(scope, {$data: obj.data, $event: obj});
                         });
